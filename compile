@@ -1,0 +1,12 @@
+#!/bin/bash
+path=`which $0`
+path=`dirname ${path}`
+cd $path
+
+cp conf/libpma.so /usr/local/lib/
+
+mvn install:install-file -Dfile=conf/PMA.jar -DgroupId=team.ecnu522.lenovoFS -DartifactId=PMA  -Dversion=1.0 -Dpackaging=jar
+mvn -DskipTests install
+
+cp /usr/local/lib/libdisni.so $CRAIL_HOME/assembly/target/apache-crail-1.3-incubating-SNAPSHOT-bin/apache-crail-1.3-incubating-SNAPSHOT/lib
+cp /usr/local/lib/libpma.so $CRAIL_HOME/assembly/target/apache-crail-1.3-incubating-SNAPSHOT-bin/apache-crail-1.3-incubating-SNAPSHOT/lib

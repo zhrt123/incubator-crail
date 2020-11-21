@@ -54,6 +54,12 @@
       <artifactId>crail-storage</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
+    <dependency>
+      <groupId>team.ecnu522.lenovoFS</groupId>
+      <artifactId>PMA</artifactId>
+      <version>1.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>

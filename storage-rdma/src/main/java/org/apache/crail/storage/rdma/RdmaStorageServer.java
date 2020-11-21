@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 
 import com.ibm.disni.*;
 import com.ibm.disni.verbs.IbvMr;
+import team.ecnu522.lenovoFS.NativePmemAllocator;
 
 public class RdmaStorageServer implements Runnable, StorageServer {
 	private static final Logger LOG = CrailUtils.getLogger();
@@ -109,8 +110,13 @@ public class RdmaStorageServer implements Runnable, StorageServer {
 			dataChannel.close();
 
 			//register buffer
-			allocatedSize += dataBuffer.capacity();
-			IbvMr mr = datanodeServerEndpoint.registerMemory(dataBuffer).execute().free().getMr();
+//			allocatedSize += dataBuffer.capacity();
+//			IbvMr mr = datanodeServerEndpoint.registerMemory(dataBuffer).execute().free().getMr();
+
+			allocatedSize += RdmaConstants.STORAGE_RDMA_ALLOCATION_SIZE;
+			long addr = NativePmemAllocator.allocate("/dev/dax0.2",(fileCount - 1) * RdmaConstants.STORAGE_RDMA_ALLOCATION_SIZE, RdmaConstants.STORAGE_RDMA_ALLOCATION_SIZE);
+			System.out.printf("allocate resource: %d\n", addr);
+			IbvMr mr = datanodeServerEndpoint.registerMemory(addr, (int) RdmaConstants.STORAGE_RDMA_ALLOCATION_SIZE).execute().free().getMr();
 
 			//create resource
 			resource = StorageResource.createResource(mr.getAddr(), mr.getLength(), mr.getLkey());
